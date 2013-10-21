@@ -1,0 +1,79 @@
+# Make the uFMOD modules for BlitzMax
+# Target OS: Linux (i386)
+
+# *** CONFIG START
+# *** Check the Readme docs for a complete reference
+# *** on configuring the following options.
+
+# Select mixing rate: 22050, 44100 or 48000 (22.05 KHz, 44.1 KHz or 48 KHz)
+UF_FREQ = 48000
+
+# Set volume ramping mode (interpolation): NONE, WEAK or STRONG
+UF_RAMP = STRONG
+
+# Set build mode: NORMAL or UNSAFE
+UF_MODE = NORMAL
+# *** CONFIG END
+
+ufmod.release.linux.x86.a,alsaufmod.release.linux.x86.a,oalufmod.release.linux.x86.a: src/fasm.asm src/core.asm src/ufmod.asm src/eff.inc
+	echo UF_OUTPUT              equ OSS                                  >tmp.asm
+	echo UF_FREQ                equ $(UF_FREQ)                          >>tmp.asm
+	echo UF_RAMP                equ $(UF_RAMP)                          >>tmp.asm
+	echo UF_MODE                equ $(UF_MODE)                          >>tmp.asm
+	echo PBASIC                 equ 0                                   >>tmp.asm
+	echo BLITZMAX               equ 1                                   >>tmp.asm
+	echo NOLINKER               equ 0                                   >>tmp.asm
+	echo uFMOD_FreeSong         equ BB_Stop                             >>tmp.asm
+	echo include \'src/fasm.asm\'                                       >>tmp.asm
+	fasm tmp.asm ufmod.o
+	echo UF_OUTPUT              equ ALSA                                 >tmp.asm
+	echo UF_FREQ                equ $(UF_FREQ)                          >>tmp.asm
+	echo UF_RAMP                equ $(UF_RAMP)                          >>tmp.asm
+	echo UF_MODE                equ $(UF_MODE)                          >>tmp.asm
+	echo PBASIC                 equ 0                                   >>tmp.asm
+	echo BLITZMAX               equ 1                                   >>tmp.asm
+	echo NOLINKER               equ 0                                   >>tmp.asm
+	echo uFMOD_Jump2Pattern     equ uFMOD_ALSAJump2Pattern              >>tmp.asm
+	echo uFMOD_Pause            equ uFMOD_ALSAPause                     >>tmp.asm
+	echo uFMOD_Resume           equ uFMOD_ALSAResume                    >>tmp.asm
+	echo uFMOD_GetTime          equ uFMOD_ALSAGetTime                   >>tmp.asm
+	echo uFMOD_GetStats         equ uFMOD_ALSAGetStats                  >>tmp.asm
+	echo uFMOD_GetRowOrder      equ uFMOD_ALSAGetRowOrder               >>tmp.asm
+	echo uFMOD_GetTitle         equ uFMOD_ALSAGetTitle                  >>tmp.asm
+	echo uFMOD_SetVolume        equ uFMOD_ALSASetVolume                 >>tmp.asm
+	echo uFMOD_FreeSong         equ BB_ALSAStop                         >>tmp.asm
+	echo include \'src/fasm.asm\'                                       >>tmp.asm
+	fasm tmp.asm alsaufmod.o
+	echo UF_OUTPUT              equ OPENAL                               >tmp.asm
+	echo UF_FREQ                equ $(UF_FREQ)                          >>tmp.asm
+	echo UF_RAMP                equ $(UF_RAMP)                          >>tmp.asm
+	echo UF_MODE                equ $(UF_MODE)                          >>tmp.asm
+	echo PBASIC                 equ 0                                   >>tmp.asm
+	echo BLITZMAX               equ 1                                   >>tmp.asm
+	echo NOLINKER               equ 0                                   >>tmp.asm
+	echo uFMOD_Jump2Pattern     equ uFMOD_OALJump2Pattern               >>tmp.asm
+	echo uFMOD_Pause            equ uFMOD_OALPause                      >>tmp.asm
+	echo uFMOD_Resume           equ uFMOD_OALResume                     >>tmp.asm
+	echo uFMOD_GetTime          equ uFMOD_OALGetTime                    >>tmp.asm
+	echo uFMOD_GetStats         equ uFMOD_OALGetStats                   >>tmp.asm
+	echo uFMOD_GetRowOrder      equ uFMOD_OALGetRowOrder                >>tmp.asm
+	echo uFMOD_GetTitle         equ uFMOD_OALGetTitle                   >>tmp.asm
+	echo uFMOD_SetVolume        equ uFMOD_OALSetVolume                  >>tmp.asm
+	echo uFMOD_FreeSong         equ BB_OALStop                          >>tmp.asm
+	echo alBufferData           equ [pub_openal_alBufferData]           >>tmp.asm
+	echo alDeleteBuffers        equ [pub_openal_alDeleteBuffers]        >>tmp.asm
+	echo alGenBuffers           equ [pub_openal_alGenBuffers]           >>tmp.asm
+	echo alGetError             equ [pub_openal_alGetError]             >>tmp.asm
+	echo alGetSourcei           equ [pub_openal_alGetSourcei]           >>tmp.asm
+	echo alSourcei              equ [pub_openal_alSourcei]              >>tmp.asm
+	echo alSourcePlay           equ [pub_openal_alSourcePlay]           >>tmp.asm
+	echo alSourceQueueBuffers   equ [pub_openal_alSourceQueueBuffers]   >>tmp.asm
+	echo alSourceStop           equ [pub_openal_alSourceStop]           >>tmp.asm
+	echo alSourceUnqueueBuffers equ [pub_openal_alSourceUnqueueBuffers] >>tmp.asm
+	echo include \'src/fasm.asm\'                                       >>tmp.asm
+	fasm tmp.asm oalufmod.o
+	ar rc ufmod.release.linux.x86.a     ufmod.o
+	ar rc alsaufmod.release.linux.x86.a alsaufmod.o
+	ar rc oalufmod.release.linux.x86.a  oalufmod.o
+	rm tmp.asm
+	rm *.o

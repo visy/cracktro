@@ -1,0 +1,32 @@
+; DSUFMOD.DESC
+; ------------
+; uFMOD public source code release. Provided as-is.
+; PureBasic library description. Requires PureBasic v3.81 or later.
+; Driver: ALSA
+
+ASM
+1
+-lasound
+OBJ
+0
+Ufmod
+uFMOD_ALSAPlaySong, Any, Any, Long, String, (lpXM, param, fdwSong, pszPCM_dev) - Starts playing an XM song
+Long
+uFMOD_ALSAStopSong
+EndFunction
+uFMOD_ALSAJump2Pattern, Long, (pat) - Jumps to the specified zero based pattern index
+None
+uFMOD_ALSAPause () - Pauses the currently playing song, if any
+None
+uFMOD_ALSAResume () - Resumes the currently paused song, if any
+None
+uFMOD_ALSAGetStats () - Returns the L RMS volume in hi-order word and R RMS in low-order word
+Long
+uFMOD_ALSAGetRowOrder () - Returns the current order in hi-order word and row in low-order word
+Long
+uFMOD_ALSAGetTime () - Returns the time in milliseconds since the song was started
+Long
+uFMOD_ALSAGetTitle () - Returns the track's title
+String
+uFMOD_ALSASetVolume, Long, (vol) - Sets global volume: 0 - 25
+None

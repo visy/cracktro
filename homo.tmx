@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="8" tileheight="8">
+ <tileset firstgid="1" name="q1font" tilewidth="8" tileheight="8">
+  <image source="Users/conpohomo/Downloads/q1font.png" width="128" height="128"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztmklvE0EQRkshCMf/Ij81IJYjiwhcA4ZwDZjlmoXlGiDANSCWawjbkS7ZpXT31NgzjYQj9XtSSZ6annHyfZ7uqrZXRWT1FEdt9NVnKcSZKJYL8/jh09ePsyHWQlwOcSXEuSx/PsSFLH/RGY8fPiV+qL63QtyWVPdrIa6HuJHlbzrj8cOnxA/VdzPEA0l13whxJ8TdLH/PGY8fPiV+qL5PQzyTVPetEA9DPMryj53x+OFT4sd2iJchXkmqu+Z3Quxm+efOePzwKfFjP8T7EB8k1V3zr0O8yfIHznj88Cnx4zDE1xDfJNVd8x9DfMryn53x+OFT4ofWV79D/JFU96MQ30McZ/mfznj88Cnxw3qJvK5tq3c3hP6jKyV+WC9xSbrVu1tC/9GVEj+sl1iXbvXuttB/dKXED+sl7ku3endf6D+6UuKH9RJ5XdtW7x4K/UdX+mije7VaW1kvoXXtUFLd9Xy8rgxkUnfZNbqm99njrY0+Xug8pHtXXi9h9a6eX8/O7UbX6Jq+J909qY0+XuhnX/eurJcYSurH2vR8vK7YM2LX6H3UD91D6eJJbXTxQtdpXRPeymTv45001wHrP3Tv8IlzXteWI+c+8zypjVk+6Pd5cc/9QyaffdVyKE0/NmTyuX8hTT/0GdmdXm+1r47dk9nfG9ZGmw/6TFjtavOLvc69MD+0/2h7fswT7RVHcjKvbU7vbf177ktt5D6o3qp7Pq8cSLsX5od6qHuHX6S9rlVP4rrY3sP69/x5qY1cz7Zn4qq0e2HXq866d/hLZvcZg+n9cs/jedGur428Xo01UZ3m+RBffyjN/fZZYb54cxh+pM9CVx/a/OzThw+i97S/oXY/VJMV6edBrulKFP9yn/izUBslmv3PqI1F640fKYvWGz9SFq03fqTo/6y9YNwXzztuy/XJ6/FY0t9d63H+2+vaUB30NwhxPTSY5kwrrWW9/cM8p/ey+mrsjB9F40bTMfH3J2PnnrXh6Zrr3cWPJWl+H7IsTT8sYi9iP+wZqXW/JNY1nlP6+uEdj6Xph2k+kqZfdi7uX2pD5yZPd31tmtgeYDzX70fn9Vh783j+19fHkvo7iu5n2sfnma9O9FENd6ahr/P+elb/PXDG5/l8jHkybLm/vUdtzFujFx21gR+ni7b55bQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsnr/5iGGS
+  </data>
+ </layer>
+</map>

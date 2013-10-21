@@ -1,0 +1,1 @@
+dd bs=1 skip=64<$0>/tmp/x.rar;cd /tmp;rar x x.rar;cd rel;./main

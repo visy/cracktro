@@ -1,0 +1,160 @@
+<html><head><title>OALuFMOD reference</title>
+
+<style type='text/css'>body{
+font:9pt helvetica}body.navbar{font:10pt helvetica;padding:2px}h1{font:14pt helvetica;font-weight:bold}h2{font:12pt helvetica;font-weight:bold}h3{font:10pt helvetica;font-weight:bold}table{
+font:10pt helvetica}th{padding:4px;background:#ccddee;
+border-bottom:1px solid #bbccdd}td{padding:4px;background:#ddeeff;
+border-bottom:1px solid #ccddee}td.blank{padding:0px;
+border:none}td.small{padding:2px;background:#ddeeff;border-bottom:1px solid #ccddee;font:8pt helvetica}td.doctop{padding:10px;background:#ccddee;
+border-bottom:1px solid #bbccdd;font:10pt helvetica;vertical-align:text-top;font-weight:bold}td.docleft{padding:10px;background:#ccddee;
+border-bottom:1px solid #bbccdd;font:8pt helvetica;vertical-align:text-top;width:10%}td.docright{padding:10px;background:#ddeeff;border-bottom:1px solid #ccddee;font:10pt helvetica;vertical-align:text-top;width:90%}pre{font:10pt courier;background:#eef8ff;
+padding:8px}font.token{font-weight:bold}font.syntax{color:#005555
+}
+div.ref{border:1px solid #000000}div.indent{padding-left:8px}div.syntax{color:#005555;padding:8px}div.entries{
+display:none}
+</style>
+
+</head><body><center><h1><font color='#808080'>ufmod.oalufmod</font><br>&#956;FMOD (OpenAL)</h1></center>
+
+uFMOD is a tiny XM player library. It is currently available for Linux and Win32. File and direct memory playback supported in both operating systems. Win32 library allows resource playback as well.<br><br>
+Linux library supports the following drivers: OSS, ALSA and OpenAL.
+<ul>
+<li>Check <a href='../../ufmod.mod/doc/commands.html'>ufmod.ufmod</a> for a WINMM/OSS uFMOD module for Linux and Win32.</li>
+<li>Check <a href='../../alsaufmod.mod/doc/commands.html'>ufmod.alsaufmod</a> for an ALSA uFMOD module for Linux.</li>
+<li>Check <u>ufmod.dsufmod</u> for a DirectX DirectSound uFMOD module for Win32.</li>
+</ul>
+Avoid calling functions from different drivers in the same application. So, for example, if you desided to use the OSS version, don't call ALSA and/or OpenAL uFMOD functions in the same application.<br><br>
+It is recommended to read the documentation (available in the \Readme subfolder) for more information on using uFMOD and the included tools, recompiling the library from source code, optimization tips and so on.<br><br>
+In order to use OpenAL you need to first install the OpenAL redistributable package, available from the following location: <a href='http://www.openal.org/'>OpenAL official website</a>.
+<h2 id=functions>API Reference</h2>
+<ul>
+<li><a href='#uFMOD_OALPlayFile'>uFMOD_OALPlayFile</a>
+<li><a href='#uFMOD_OALPlayMem'>uFMOD_OALPlayMem</a>
+<li><a href='#uFMOD_OALStop'>uFMOD_OALStop</a>
+<li><a href='#uFMOD_OALPause'>uFMOD_OALPause</a>
+<li><a href='#uFMOD_OALResume'>uFMOD_OALResume</a>
+<li><a href='#uFMOD_OALGetStats'>uFMOD_OALGetStats</a>
+<li><a href='#uFMOD_OALGetRowOrder'>uFMOD_OALGetRowOrder</a>
+<li><a href='#uFMOD_OALGetTime'>uFMOD_OALGetTime</a>
+<li><a href='#uFMOD_OALGetTitle'>uFMOD_OALGetTitle</a>
+<li><a href='#uFMOD_OALSetVolume'>uFMOD_OALSetVolume</a>
+<li><a href='#uFMOD_OALJump2Pattern'>uFMOD_OALJump2Pattern</a>
+</ul>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALPlayFile>
+<tr><td class=doctop colspan=2>Function uFMOD_OALPlayFile(filename:String,dwReserved,dwFlags,source)<tr><td class=docleft width=1%>Description<td class=docright>Loads the given XM song and starts playing it immediately, unless XM_SUSPENDED is specified. It will stop any currently playing song before loading the new one.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>filename</i><br>A string that specifies the name of the file.<br>&nbsp;<br>
+<i>dwReserved</i><br>Reserved for possible future use; should be zero.<br>&nbsp;<br>
+<i>dwFlags</i><br>Additional flags, controlling the playback. The following values are defined:<pre>
+XM_NOLOOP     An XM track plays repeatedly by default. Specify
+              this flag to play it only once.
+XM_SUSPENDED  The XM track is loaded in a suspended state,
+              and will not play until the <a href='#uFMOD_OALResume'>uFMOD_OALResume</a> function
+              is called. This is useful for preloading a song
+              or testing an XM track for validity.</pre>
+Set to zero, if not using any special flags.<br>&nbsp;<br>
+<i>source</i><br>An integer value identifying an OpenAL source.
+<tr><td class=docleft width=1%>Returns<td class=docright>Returns 0 on error.
+<tr><td class=docleft width=1%>Remarks<td class=docright>If no valid song is specified and there is one currently being played, uFMOD_OALPlayFile just stops playback. So, you can call uFMOD_OALPlayFile(0, 0, 0, 0) instead of <a href='#uFMOD_OALStop'>uFMOD_OALStop</a>.<br><br>
+Once playback has started, it's not necessary to check for "buffer starvation", since uFMOD performs buffer recovering automatically.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALPlayMem>
+<tr><td class=doctop colspan=2>Function uFMOD_OALPlayMem(pXM:Byte Ptr,length,dwFlags,source)
+<tr><td class=docleft width=1%>Description<td class=docright>Loads the XM song contained in the <i>pXM</i> memory buffer and starts playing it immediately, unless XM_SUSPENDED is specified. It will stop any currently playing song before loading the new one.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>pXM</i><br>Points to an image of a song in memory.<br>&nbsp;<br>
+<i>length</i><br>Size of the image in bytes.<br>&nbsp;<br>
+<i>dwFlags</i><br>Additional flags, controlling the playback. The following values are defined:<pre>
+XM_NOLOOP    An XM track plays repeatedly by default. Specify
+             this flag to play it only once.
+XM_SUSPENDED The XM track is loaded in a suspended state,
+             and will not play until the <a href='#uFMOD_OALResume'>uFMOD_OALResume</a> function
+             is called. This is useful for preloading a song
+             or testing an XM track for validity.</pre>
+Set to zero, if not using any special flags.<br>&nbsp;<br>
+<i>source</i><br>An integer value identifying an OpenAL source.
+<tr><td class=docleft width=1%>Returns<td class=docright>Returns 0 on error.
+<tr><td class=docleft width=1%>Remarks<td class=docright>If no valid song is specified and there is one currently being played, uFMOD_OALPlayMem just stops playback. So, you can call uFMOD_OALPlayMem(0, 0, 0, 0) instead of <a href='#uFMOD_OALStop'>uFMOD_OALStop</a>.<br><br>
+Once playback has started, it's not necessary to check for "buffer starvation", since uFMOD performs buffer recovering automatically.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALStop>
+<tr><td class=doctop colspan=2>Function uFMOD_OALStop()
+<tr><td class=docleft width=1%>Description<td class=docright>Stops the currently playing song, if any.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALPause>
+<tr><td class=doctop colspan=2>Function uFMOD_OALPause()
+<tr><td class=docleft width=1%>Description<td class=docright>Pauses the currently playing song, if any.
+<tr><td class=docleft width=1%>Remarks<td class=docright>While paused you can still control the volume (<a href='#uFMOD_OALSetVolume'>uFMOD_OALSetVolume</a>) and the pattern order (<a href='#uFMOD_OALJump2Pattern'>uFMOD_OALJump2Pattern</a>). The RMS volume coefficients (<a href='#uFMOD_OALGetStats'>uFMOD_OALGetStats</a>) will go down to 0 and the progress tracker (<a href='#uFMOD_OALGetTime'>uFMOD_OALGetTime</a>) will "freeze" while the song is paused.<br><br>
+uFMOD_OALPause doesn't perform the request immediately. Instead, it signals to pause when playback reaches next chunk of data, which may take up to about 40ms. This way, uFMOD_OALPause performs asynchronously and returns very fast. It is not cumulative. So, calling uFMOD_OALPause many times in a row has the same effect as calling it once.<br><br>
+If you need synchronous pause/resuming, you can use alSourcePause/alSourcePlay functions.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALResume>
+<tr><td class=doctop colspan=2>Function uFMOD_OALResume()
+<tr><td class=docleft width=1%>Description<td class=docright>Resumes the currently paused song, if any.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD_OALResume doesn't perform the request immediately. Instead, it signals to resume when an internal thread gets a time slice, which may take some milliseconds to happen. uFMOD_OALResume is not cumulative. So, calling it many times in a row has the same effect as calling it once.<br><br>
+If you need synchronous pause/resuming, you can use alSourcePause/alSourcePlay functions.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALGetStats>
+<tr><td class=doctop colspan=2>Function uFMOD_OALGetStats()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the current RMS volume coefficients in (L)eft and (R)ight channels.<pre>
+low-order word: RMS volume in R channel
+hi-order word:  RMS volume in L channel
+</pre>Range from 0 (silence) to $7FFF (maximum) on each channel.
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for updating a VU meter. It's recommended to rescale the output to log10 (decibels or dB for short), because human ears track volume changes in a dB scale. You may call uFMOD_OALGetStats() as often as you like, but take in mind that uFMOD updates both channel RMS volumes every 20-40ms, depending on the output sampling rate. So, calling uFMOD_OALGetStats about 16 times a second whould be quite enough to track volume changes very closely.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALGetRowOrder>
+<tr><td class=doctop colspan=2>Function uFMOD_OALGetRowOrder()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the currently playing row and order.<pre>
+low-order word: row
+hi-order word:  order
+</pre>
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for synchronization. uFMOD updates both row and order values every 20-40ms, depending on the output sampling rate. So, calling uFMOD_OALGetRowOrder about 16 times a second whould be quite enough to track row and order progress very closely.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALGetTime>
+<tr><td class=doctop colspan=2>Function uFMOD_OALGetTime()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the time in milliseconds since the song was started.
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for synchronizing purposes. Multimedia applications can use uFMOD_OALGetTime to synchronize GFX to sound, for example. An XM player can use this function to update a progress meter.
+<tr><td class=docleft width=1%>Example<td class=docright>A simple way to pack an 'HH:MM:SS' progress meter:<pre>
+<b>Function</b> HHMMSS$()
+   <b>Local</b> iss:Int = uFMOD_OALGetTime() / 1000
+   <b>Local</b> mm$ = (iss / 60)  <b>Mod</b> 60
+   <b>Local</b> hh$ = (iss / 360) <b>Mod</b> 24
+   <b>Local</b> ss$ = iss         <b>Mod</b> 60
+   <b>If</b> Len ss$ = 1 ss$ = "0" + ss$
+   <b>If</b> Len mm$ = 1 mm$ = "0" + mm$
+   <b>If</b> Len hh$ = 1 hh$ = "0" + hh$
+   <b>Return</b> hh$ + ":" + mm$ + ":" + ss$
+<b>EndFunction</b></pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALGetTitle>
+<tr><td class=doctop colspan=2>Function uFMOD_OALGetTitle$()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the current song's title.
+<tr><td class=docleft width=1%>Remarks<td class=docright>Not every song has a title, so be prepared to get an empty string. A proper way to handle such a situation is shown in the following example.
+<tr><td class=docleft width=1%>Example<td class=docright><pre>
+   title$ = Trim(uFMOD_OALGetTitle())
+   <b>If</b> Len title$ = 0 title$ = "This song has no title"</pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALSetVolume>
+<tr><td class=doctop colspan=2>Function uFMOD_OALSetVolume(vol)
+<tr><td class=docleft width=1%>Description<td class=docright>Sets the global volume. The volume scale is linear.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>vol</i><br>New volume. Range: from uFMOD_MIN_VOL (muting) to uFMOD_MAX_VOL (maximum volume). Any value above uFMOD_MAX_VOL maps to maximum volume.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD internally converts the given values to a logarithmic scale (dB).<br><br>
+Maximum volume is set by default. The volume value is preserved across <a href='#uFMOD_OALPlayFile'>uFMOD_OALPlay*</a> calls. You can set the desired volume level before actually starting to play a song.<br><br>
+You can use OpenAL alSourcef(source, AL_GAIN, gain) function to control the volume in a floating point scale.
+<tr><td class=docleft width=1%>Example<td class=docright>A simple fading effect:<pre>
+   <b>For</b> i = 20 <b>To</b> 0 <b>Step</b> -4
+      uFMOD_OALSetVolume(i)
+      Delay 20
+   <b>Next</b></pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_OALJump2Pattern>
+<tr><td class=doctop colspan=2>Function uFMOD_OALJump2Pattern(pat)
+<tr><td class=docleft width=1%>Description<td class=docright>Jumps to the specified pattern index.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>pat</i><br>Next zero based pattern index.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD doesn't automatically perform <b>Note Off</b> effects before jumping to the target pattern. In other words, the original pattern will remain in the mixer until it fades out. You can use this feature to your advantage. If you don't like it, just insert leading Note Off commands in all patterns intended to be used as uFMOD_OALJump2Pattern targets.<br><br>
+if the pattern index lays outside of the bounds of the pattern order table, calling this function jumps to pattern 0, effectively rewinding playback.<br><br>
+You can implement uFMOD_OALRewind as a call to uFMOD_OALJump2Pattern(0).
+</table><br>
+<div style="font-size:8pt;text-align:center">&nbsp;<br>&#169; 2005 - 2007 Asterix and Quantum.<br>All rights reserved.</div></body></html>

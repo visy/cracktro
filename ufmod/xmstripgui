@@ -1,0 +1,48 @@
+#!/bin/sh
+# XMStrip GUI frontend. Requires Tcl/Tk. \
+exec wish "$0"
+
+proc LoadXM {} {
+set xmtype {{"XM files" {".xm" ".XM"}} {"All files" *}}
+set xm [tk_getOpenFile -filetypes $xmtype]
+if {$xm != ""} {
+.a.a configure -state normal -text $xm
+.e.a configure -state normal
+}
+}
+proc RunXMSTRIP {} {
+global b
+if {![file executable ./xmstrip]} {
+tk_messageBox -message "'xmstrip' executable not found" -title Error -type ok -icon error
+return
+}
+set r [.a.a cget -text]
+if {![file readable $r]} {
+tk_messageBox -message "'$r' not found or not readable" -title Error -type ok -icon error
+return
+}
+if {$b != 0} { set r [exec ./xmstrip "$r"] } else { set r [exec ./xmstrip -c "$r"] }
+tk_messageBox -message $r -title XMSTRIP -type ok -icon info
+}
+frame .a -relief groove -borderwidth 2
+label .a.a -text "No file loaded" -state disabled -width 32 -anchor w
+button .a.b -text Load -command LoadXM
+frame .b
+radiobutton .b.a -text "Clean and strip" -value 1 -variable b -command {set c 0}
+radiobutton .b.b -text "Stick to standard" -value 1 -variable c -command {set b 0}
+set b 0
+set c 1
+frame .e
+button .e.a -text OK -state disabled -command RunXMSTRIP
+button .e.b -text Cancel -command exit
+pack .a.a -side left -padx 4 -pady 4
+pack .a.b -side right -padx 4 -pady 4
+pack .a -side top -padx 4 -pady 4
+pack .b.a -side left -padx 4
+pack .b.b -side right -padx 4
+pack .b -padx 4
+pack .e.a -side left -padx 4 -pady 4
+pack .e.b -side right -padx 4 -pady 4
+pack .e -side bottom -padx 4 -pady 4
+wm title . "XMSTRIP"
+wm resizable . 0 0

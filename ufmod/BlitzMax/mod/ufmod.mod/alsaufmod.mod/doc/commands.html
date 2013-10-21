@@ -1,0 +1,156 @@
+<html><head><title>ALSAuFMOD reference</title>
+
+<style type='text/css'>body{
+font:9pt helvetica}body.navbar{font:10pt helvetica;padding:2px}h1{font:14pt helvetica;font-weight:bold}h2{font:12pt helvetica;font-weight:bold}h3{font:10pt helvetica;font-weight:bold}table{
+font:10pt helvetica}th{padding:4px;background:#ccddee;
+border-bottom:1px solid #bbccdd}td{padding:4px;background:#ddeeff;
+border-bottom:1px solid #ccddee}td.blank{padding:0px;
+border:none}td.small{padding:2px;background:#ddeeff;border-bottom:1px solid #ccddee;font:8pt helvetica}td.doctop{padding:10px;background:#ccddee;
+border-bottom:1px solid #bbccdd;font:10pt helvetica;vertical-align:text-top;font-weight:bold}td.docleft{padding:10px;background:#ccddee;
+border-bottom:1px solid #bbccdd;font:8pt helvetica;vertical-align:text-top;width:10%}td.docright{padding:10px;background:#ddeeff;border-bottom:1px solid #ccddee;font:10pt helvetica;vertical-align:text-top;width:90%}pre{font:10pt courier;background:#eef8ff;
+padding:8px}font.token{font-weight:bold}font.syntax{color:#005555
+}
+div.ref{border:1px solid #000000}div.indent{padding-left:8px}div.syntax{color:#005555;padding:8px}div.entries{
+display:none}
+</style>
+
+</head><body><center><h1><font color='#808080'>ufmod.alsaufmod</font><br>&#956;FMOD (ALSA)</h1></center>
+
+uFMOD is a tiny XM player library. It is currently available for Linux and Win32. File and direct memory playback supported in both operating systems. Win32 library allows resource playback as well.<br><br>
+Linux library supports the following drivers: OSS, ALSA and OpenAL.
+<ul>
+<li>Check <a href='../../ufmod.mod/doc/commands.html'>ufmod.ufmod</a> for a WINMM/OSS uFMOD module for Linux and Win32.</li>
+<li>Check <a href='../../oalufmod.mod/doc/commands.html'>ufmod.oalufmod</a> for an OpenAL uFMOD module for Linux and Win32.</li>
+<li>Check <u>ufmod.dsufmod</u> for a DirectX DirectSound uFMOD module for Win32.</li>
+</ul>
+Avoid calling functions from different drivers in the same application. So, for example, if you desided to use the OSS version, don't call ALSA and/or OpenAL uFMOD functions in the same application.<br><br>
+It is recommended to read the documentation (available in the \Readme subfolder) for more information on using uFMOD and the included tools, recompiling the library from source code, optimization tips and so on.
+<h2 id=functions>API Reference</h2>
+<ul>
+<li><a href='#uFMOD_ALSAPlayFile'>uFMOD_ALSAPlayFile</a>
+<li><a href='#uFMOD_ALSAPlayMem'>uFMOD_ALSAPlayMem</a>
+<li><a href='#uFMOD_ALSAStop'>uFMOD_ALSAStop</a>
+<li><a href='#uFMOD_ALSAPause'>uFMOD_ALSAPause</a>
+<li><a href='#uFMOD_ALSAResume'>uFMOD_ALSAResume</a>
+<li><a href='#uFMOD_ALSAGetStats'>uFMOD_ALSAGetStats</a>
+<li><a href='#uFMOD_ALSAGetRowOrder'>uFMOD_ALSAGetRowOrder</a>
+<li><a href='#uFMOD_ALSAGetTime'>uFMOD_ALSAGetTime</a>
+<li><a href='#uFMOD_ALSAGetTitle'>uFMOD_ALSAGetTitle</a>
+<li><a href='#uFMOD_ALSASetVolume'>uFMOD_ALSASetVolume</a>
+<li><a href='#uFMOD_ALSAJump2Pattern'>uFMOD_ALSAJump2Pattern</a>
+</ul>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAPlayFile>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAPlayFile(filename:String,dwReserved,dwFlags,szPCM_dev:String)<tr><td class=docleft width=1%>Description<td class=docright>Loads the given XM song and starts playing it immediately, unless XM_SUSPENDED is specified. It will stop any currently playing song before loading the new one.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>filename</i><br>A string that specifies the name of the file.<br>&nbsp;<br>
+<i>dwReserved</i><br>Reserved for possible future use; should be zero.<br>&nbsp;<br>
+<i>dwFlags</i><br>Additional flags, controlling the playback. The following values are defined:<pre>
+XM_NOLOOP     An XM track plays repeatedly by default. Specify
+              this flag to play it only once.
+XM_SUSPENDED  The XM track is loaded in a suspended state,
+              and will not play until the <a href='#uFMOD_ALSAResume'>uFMOD_ALSAResume</a> function
+              is called. This is useful for preloading a song
+              or testing an XM track for validity.</pre>
+Set to zero, if not using any special flags.<br>&nbsp;<br>
+<i>szPCM_dev</i><br>ASCII identifier of the ALSA PCM device. Check the ALSA documentation for a complete reference of valid PCM device names. "plughw:0,0" should work fine for most applications.
+<tr><td class=docleft width=1%>Returns<td class=docright>On success, returns a PCM device handle. Returns 0 on error.
+<tr><td class=docleft width=1%>Remarks<td class=docright>If no valid song is specified and there is one currently being played, uFMOD_ALSAPlayFile just stops playback. So, you can call uFMOD_ALSAPlayFile(0, 0, 0, 0) instead of <a href='#uFMOD_ALSAStop'>uFMOD_ALSAStop</a>.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAPlayMem>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAPlayMem(pXM:Byte Ptr,length,dwFlags,szPCM_dev:String)
+<tr><td class=docleft width=1%>Description<td class=docright>Loads the XM song contained in the <i>pXM</i> memory buffer and starts playing it immediately, unless XM_SUSPENDED is specified. It will stop any currently playing song before loading the new one.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>pXM</i><br>Points to an image of a song in memory.<br>&nbsp;<br>
+<i>length</i><br>Size of the image in bytes.<br>&nbsp;<br>
+<i>dwFlags</i><br>Additional flags, controlling the playback. The following values are defined:<pre>
+XM_NOLOOP    An XM track plays repeatedly by default. Specify
+             this flag to play it only once.
+XM_SUSPENDED The XM track is loaded in a suspended state,
+             and will not play until the <a href='#uFMOD_ALSAResume'>uFMOD_ALSAResume</a> function
+             is called. This is useful for preloading a song
+             or testing an XM track for validity.</pre>
+Set to zero, if not using any special flags.<br>&nbsp;<br>
+<i>szPCM_dev</i><br>ASCII identifier of the ALSA PCM device. Check the ALSA documentation for a complete reference of valid PCM device names. "plughw:0,0" should work fine for most applications.
+<tr><td class=docleft width=1%>Returns<td class=docright>On success, returns a PCM device handle. Returns 0 on error.
+<tr><td class=docleft width=1%>Remarks<td class=docright>If no valid song is specified and there is one currently being played, uFMOD_ALSAPlayMem just stops playback. So, you can call uFMOD_ALSAPlayMem(0, 0, 0, 0) instead of <a href='#uFMOD_ALSAStop'>uFMOD_ALSAStop</a>.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAStop>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAStop()
+<tr><td class=docleft width=1%>Description<td class=docright>Stops the currently playing song, if any.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAPause>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAPause()
+<tr><td class=docleft width=1%>Description<td class=docright>Pauses the currently playing song, if any.
+<tr><td class=docleft width=1%>Remarks<td class=docright>While paused you can still control the volume (<a href='#uFMOD_ALSASetVolume'>uFMOD_ALSASetVolume</a>) and the pattern order (<a href='#uFMOD_ALSAJump2Pattern'>uFMOD_ALSAJump2Pattern</a>). The RMS volume coefficients (<a href='#uFMOD_ALSAGetStats'>uFMOD_ALSAGetStats</a>) will go down to 0 and the progress tracker (<a href='#uFMOD_ALSAGetTime'>uFMOD_ALSAGetTime</a>) will "freeze" while the song is paused.<br><br>
+uFMOD_ALSAPause doesn't perform the request immediately. Instead, it signals to pause when playback reaches next chunk of data, which may take up to about 40ms. This way, uFMOD_ALSAPause performs asynchronously and returns very fast. It is not cumulative. So, calling uFMOD_ALSAPause many times in a row has the same effect as calling it once.<br><br>
+If you need synchronous hardware-driven pause/resuming, you can use the snd_pcm_pause API function.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAResume>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAResume()
+<tr><td class=docleft width=1%>Description<td class=docright>Resumes the currently paused song, if any.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD_ALSAResume doesn't perform the request immediately. Instead, it signals to resume when an internal thread gets a time slice, which may take some milliseconds to happen. uFMOD_ALSAResume is not cumulative. So, calling it many times in a row has the same effect as calling it once.<br><br>
+If you need synchronous hardware-driven pause/resuming, you can use the snd_pcm_pause API function.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAGetStats>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAGetStats()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the current RMS volume coefficients in (L)eft and (R)ight channels.<pre>
+low-order word: RMS volume in R channel
+hi-order word:  RMS volume in L channel
+</pre>Range from 0 (silence) to $7FFF (maximum) on each channel.
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for updating a VU meter. It's recommended to rescale the output to log10 (decibels or dB for short), because human ears track volume changes in a dB scale. You may call uFMOD_ALSAGetStats() as often as you like, but take in mind that uFMOD updates both channel RMS volumes every 20-40ms, depending on the output sampling rate. So, calling uFMOD_ALSAGetStats about 16 times a second whould be quite enough to track volume changes very closely.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAGetRowOrder>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAGetRowOrder()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the currently playing row and order.<pre>
+low-order word: row
+hi-order word:  order
+</pre>
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for synchronization. uFMOD updates both row and order values every 20-40ms, depending on the output sampling rate. So, calling uFMOD_ALSAGetRowOrder about 16 times a second whould be quite enough to track row and order progress very closely.
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAGetTime>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAGetTime()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the time in milliseconds since the song was started.
+<tr><td class=docleft width=1%>Remarks<td class=docright>This function is useful for synchronizing purposes. Multimedia applications can use uFMOD_ALSAGetTime to synchronize GFX to sound, for example. An XM player can use this function to update a progress meter.
+<tr><td class=docleft width=1%>Example<td class=docright>A simple way to pack an 'HH:MM:SS' progress meter:<pre>
+<b>Function</b> HHMMSS$()
+   <b>Local</b> iss:Int = uFMOD_ALSAGetTime() / 1000
+   <b>Local</b> mm$ = (iss / 60)  <b>Mod</b> 60
+   <b>Local</b> hh$ = (iss / 360) <b>Mod</b> 24
+   <b>Local</b> ss$ = iss         <b>Mod</b> 60
+   <b>If</b> Len ss$ = 1 ss$ = "0" + ss$
+   <b>If</b> Len mm$ = 1 mm$ = "0" + mm$
+   <b>If</b> Len hh$ = 1 hh$ = "0" + hh$
+   <b>Return</b> hh$ + ":" + mm$ + ":" + ss$
+<b>EndFunction</b></pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAGetTitle>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAGetTitle$()
+<tr><td class=docleft width=1%>Description<td class=docright>Returns the current song's title.
+<tr><td class=docleft width=1%>Remarks<td class=docright>Not every song has a title, so be prepared to get an empty string. A proper way to handle such a situation is shown in the following example.
+<tr><td class=docleft width=1%>Example<td class=docright><pre>
+   title$ = Trim(uFMOD_ALSAGetTitle())
+   <b>If</b> Len title$ = 0 title$ = "This song has no title"</pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSASetVolume>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSASetVolume(vol)
+<tr><td class=docleft width=1%>Description<td class=docright>Sets the global volume. The volume scale is linear.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>vol</i><br>New volume. Range: from uFMOD_MIN_VOL (muting) to uFMOD_MAX_VOL (maximum volume). Any value above uFMOD_MAX_VOL maps to maximum volume.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD internally converts the given values to a logarithmic scale (dB).<br><br>
+Maximum volume is set by default. The volume value is preserved across <a href='#uFMOD_ALSAPlayFile'>uFMOD_ALSAPlay*</a> calls. You can set the desired volume level before actually starting to play a song.
+<tr><td class=docleft width=1%>Example<td class=docright>A simple fading effect:<pre>
+   <b>For</b> i = 20 <b>To</b> 0 <b>Step</b> -4
+      uFMOD_ALSASetVolume(i)
+      Delay 20
+   <b>Next</b></pre>
+</table><br>
+<table class=doc width=100% cellspacing=3 id=uFMOD_ALSAJump2Pattern>
+<tr><td class=doctop colspan=2>Function uFMOD_ALSAJump2Pattern(pat)
+<tr><td class=docleft width=1%>Description<td class=docright>Jumps to the specified pattern index.
+<tr><td class=docleft width=1%>Parameters<td class=docright>
+<i>pat</i><br>Next zero based pattern index.
+<tr><td class=docleft width=1%>Remarks<td class=docright>uFMOD doesn't automatically perform <b>Note Off</b> effects before jumping to the target pattern. In other words, the original pattern will remain in the mixer until it fades out. You can use this feature to your advantage. If you don't like it, just insert leading Note Off commands in all patterns intended to be used as uFMOD_ALSAJump2Pattern targets.<br><br>
+if the pattern index lays outside of the bounds of the pattern order table, calling this function jumps to pattern 0, effectively rewinding playback.<br><br>
+You can implement uFMOD_ALSARewind as a call to uFMOD_ALSAJump2Pattern(0).
+</table><br>
+<div style="font-size:8pt;text-align:center">&nbsp;<br>&#169; 2005 - 2007 Asterix and Quantum.<br>All rights reserved.</div></body></html>

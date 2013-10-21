@@ -1,0 +1,31 @@
+; UFMOD.DESC
+; ----------
+; uFMOD public source code release. Provided as-is.
+; PureBasic library description. Requires PureBasic v3.81 or later.
+; Driver: OSS
+
+ASM
+0
+OBJ
+0
+Ufmod
+uFMOD_PlaySong, Any, Any, Long, (lpXM, param, fdwSong) - Starts playing an XM song
+Long
+uFMOD_StopSong
+EndFunction
+uFMOD_Jump2Pattern, Long, (pat) - Jumps to the specified zero based pattern index
+None
+uFMOD_Pause () - Pauses the currently playing song, if any
+None
+uFMOD_Resume () - Resumes the currently paused song, if any
+None
+uFMOD_GetStats () - Returns the L RMS volume in hi-order word and R RMS in low-order word
+Long
+uFMOD_GetRowOrder () - Returns the current order in hi-order word and row in low-order word
+Long
+uFMOD_GetTime () - Returns the time in milliseconds since the song was started
+Long
+uFMOD_GetTitle () - Returns the track's title
+String
+uFMOD_SetVolume, Long, (vol) - Sets global volume: 0 - 25
+None

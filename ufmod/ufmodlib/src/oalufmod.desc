@@ -1,0 +1,32 @@
+; OALUFMOD.DESC
+; -------------
+; uFMOD public source code release. Provided as-is.
+; PureBasic library description. Requires PureBasic v3.81 or later.
+; Driver: OpenAL
+
+ASM
+0
+OBJ
+1
+Pbopenal
+Ufmod
+uFMOD_OALPlaySong, Any, Any, Long, Long, (lpXM, param, fdwSong, alsource) - Starts playing an XM song
+Long
+uFMOD_OALStopSong
+EndFunction
+uFMOD_OALJump2Pattern, Long, (pat) - Jumps to the specified zero based pattern index
+None
+uFMOD_OALPause () - Pauses the currently playing song, if any
+None
+uFMOD_OALResume () - Resumes the currently paused song, if any
+None
+uFMOD_OALGetStats () - Returns the L RMS volume in hi-order word and R RMS in low-order word
+Long
+uFMOD_OALGetRowOrder () - Returns the current order in hi-order word and row in low-order word
+Long
+uFMOD_OALGetTime () - Returns the time in milliseconds since the song was started
+Long
+uFMOD_OALGetTitle () - Returns the track's title
+String
+uFMOD_OALSetVolume, Long, (vol) - Sets global volume: 0 - 25
+None

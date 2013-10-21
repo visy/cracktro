@@ -1,0 +1,130 @@
+#!/bin/sh
+# EFF GUI frontend. Requires Tcl/Tk. \
+exec wish "$0"
+
+proc LoadXM {} {
+set xmtype {{"XM files" {".xm" ".XM"}} {"All files" *}}
+set xm [tk_getOpenFile -filetypes $xmtype]
+if {$xm != ""} {
+.a.a configure -state normal -text $xm
+.k.b configure -state normal
+.n.a configure -state normal
+.e.a configure -state normal
+}
+}
+proc PickDIR {} {
+global ud
+set targetdir [tk_chooseDirectory -mustexist true]
+if {$targetdir != ""} {
+if {$targetdir != "/"} { set targetdir $targetdir/ }
+.k.a configure -state normal -text $targetdir
+set ud 1
+}
+}
+proc PickDump {} {
+global d p3
+if {$d != 0} {
+set d 0
+.n.b.a configure -state disabled
+.n.b.b configure -state disabled
+.n.b.c configure -state disabled
+.n.b.d configure -state disabled
+.n.c configure -state disabled
+} else {
+set d 1
+.n.b.a configure -state normal
+.n.b.b configure -state normal
+.n.b.c configure -state normal
+.n.b.d configure -state normal
+if {$p3 == 1} {
+.n.c configure -state normal
+}
+}
+}
+proc PickCPP {} {
+global p2 p3 p4
+foreach {p2 p3 p4} {0} {}
+.n.c configure -state disabled
+}
+proc PickPASCAL {} {
+global p1 p3 p4
+foreach {p1 p3 p4} {0} {}
+.n.c configure -state disabled
+}
+proc PickMASM {} {
+global p1 p2 p4
+foreach {p1 p2 p4} {0} {}
+.n.c configure -state normal
+}
+proc PickRCDATA {} {
+global p1 p2 p3
+foreach {p1 p2 p3} {0} {}
+.n.c configure -state disabled
+}
+proc RunEFF {} {
+global b f g h j c d p p1 p2 p3 p4 ud env
+if {![file executable ./eff]} {
+tk_messageBox -message "'eff' executable not found" -title Error -type ok -icon error
+return
+}
+set r [.a.a cget -text]
+if {![file readable $r]} {
+tk_messageBox -message "'$r' not found or not readable" -title Error -type ok -icon error
+return
+}
+if {$ud == 1} { set env(UF_CDIR) [.k.a cget -text] } else { set env(UF_CDIR) "" }
+foreach {a1 a2 a3 a4 a5 a6 a7 a8} {""} {}
+if {$b != 0} { set a1 "i" }
+if {$f != 0} { set a2 "l" }
+if {$g != 0} { set a3 "p" }
+if {$h != 0} { set a4 "v" }
+if {$j != 0} { set a5 "j" }
+if {$c != 0} { set a6 "f" }
+if {$d != 0} {
+if {$p != 0} { set a8 "/M" }
+if {$p1 == 1} { set a7 "c" }
+if {$p2 == 1} { set a7 "d" }
+if {$p3 == 1} { set a7 "m" }
+if {$p4 == 1} { set a7 "s" }
+}
+set r [exec ./eff /Dr$a1$a2$a3$a4$a5$a6$a7 $a8 $r]
+tk_messageBox -message $r -title EFF -type ok -icon info
+}
+frame .a -relief groove -borderwidth 2
+label .a.a -text "No file loaded" -state disabled -width 32 -anchor w
+button .a.b -text ... -command LoadXM
+frame .m
+checkbutton .m.b -text "Disable InfoAPI" -variable b
+checkbutton .m.f -text "Disable XM_NOLOOP" -variable f
+checkbutton .m.g -text "Disable pause/resume and XM_SUSPENDED" -variable g
+checkbutton .m.h -text "Disable volume control" -variable h
+checkbutton .m.j -text "Disable Jump2Pattern" -variable j
+checkbutton .m.c -text "Disable loading XM from file" -variable c
+frame .k -relief groove -borderwidth 2
+label .k.a -text "Current folder" -state disabled -width 32 -anchor w
+button .k.b -text ... -state disabled -command PickDIR
+frame .n
+checkbutton .n.a -text "Generate a hex dump file. Select syntax:" -state disabled -command PickDump
+frame .n.b
+radiobutton .n.b.a -text C/C++ -state disabled -value 1 -variable p1 -command PickCPP
+radiobutton .n.b.b -text "Pascal (Delphi)" -state disabled -value 1 -variable p2 -command PickPASCAL
+radiobutton .n.b.c -text masm32/tasm -state disabled -value 1 -variable p3 -command PickMASM
+radiobutton .n.b.d -text RCDATA -state disabled -value 1 -variable p4 -command PickRCDATA
+set p1 1
+foreach {d p2 p3 p4 ud} {0} {}
+checkbutton .n.c -state disabled -text "Mark and clear-out unused chunks of data" -variable p
+frame .e
+button .e.a -text OK -state disabled -command RunEFF
+button .e.b -text Cancel -command exit
+pack .a.a -side left -padx 4 -pady 4
+pack .a.b -side right -padx 4 -pady 4
+pack .m.b .m.f .m.g .m.h .m.j .m.c -anchor w
+pack .k.a -side left -padx 4 -pady 4
+pack .k.b -side right -padx 4 -pady 4
+pack .n.b.a .n.b.b .n.b.c .n.b.d -padx 8 -anchor w
+pack .n.a .n.b .n.c -anchor w
+pack .e.a -side left -padx 4 -pady 4
+pack .e.b -side right -padx 4 -pady 4
+pack .a .m .k .n .e -padx 4 -pady 4
+wm title . "EFF"
+wm resizable . 0 0

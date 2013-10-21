@@ -1,0 +1,144 @@
+#!/bin/sh
+# GUI XM player. Requires Tcl/Tk. \
+exec wish "$0"
+
+# libalsaufmod.so enables the following uFMOD commands in Tcl/Tk:
+#    uFMOD_ALSAPlaySong - start playing the given XM file
+#    uFMOD_StopSong     - stop playback
+#    uFMOD_Jump2Pattern - jumps to the given pattern
+#    uFMOD_Pause        - pause playback
+#    uFMOD_Resume       - resume playback
+#    uFMOD_GetLVol      - return RMS volume in L channel (in dB)
+#    uFMOD_GetRVol      - return RMS volume in R channel (in dB)
+#    uFMOD_GetRow       - return the currently playing row
+#    uFMOD_GetOrder     - return the currently playing order
+#    uFMOD_GetTime      - return time in s since song started
+#    uFMOD_GetTitle     - return current track's title, if any
+#    uFMOD_SetVolume    - set global volume [0 - muting, 25 - max]
+#    uFMOD icon:
+#       uFMOD_ico1_face - bitmap face
+#       uFMOD_ico1_mask - bitmap mask
+load ./libalsaufmod.so uFMOD
+
+# Select VU meter colors: green - yellow - red
+proc getColor {vol i} {
+	set c #C0C0C0
+	if {$vol > $i} {
+		set c #7FFF00
+		if {$i > 7} {
+			set c #FFFF00
+			if {$i > 10} { set c #FF0000 }
+		}
+	}
+	set c
+}
+
+foreach {loadstop paused olds oldL oldR} {0} {}
+
+# A timer which updates playback progress and VU meters
+proc Tick {} {
+global olds oldL oldR
+	set s [uFMOD_GetTime]
+	if {$s != $olds} {
+		set olds $s
+		set m [expr $s / 60]
+		set h [expr $m / 60 % 24]
+		set m [expr $m % 60]
+		set s [expr $s % 60]
+		set t [format %02d:%02d:%02d $h $m $s]
+		.l configure -text $t
+	}
+	set L [uFMOD_GetLVol]
+	set R [uFMOD_GetRVol]
+	if {$L != $oldL || $R != $oldR} {
+		set oldL $L
+		set oldR $R
+		set i 0
+		while {$i < 16} {
+			.c itemconfigure L$i -fill [getColor $L $i]
+			.c itemconfigure R$i -fill [getColor $R $i]
+			set i [expr $i + 1]
+		}
+	}
+	after 64 Tick
+}
+
+# Start/stop playback.
+proc LoadStop {} {
+global loadstop
+	if {$loadstop == 0} {
+		set xmtype {{"XM files" {".xm" ".XM"}}}
+		set xm [tk_getOpenFile -filetypes $xmtype]
+		PlayXM $xm
+	} else {
+		set loadstop 0
+		uFMOD_StopSong
+		.o configure -text Load
+		.p configure -state disabled -text Pause
+		.v configure -state disabled
+		wm title . "XM Player"
+	}
+}
+
+# Pause/resume playback.
+proc PauseResume {} {
+global paused
+	if {$paused == 0} {
+		set paused 1
+		uFMOD_Pause
+		.p configure -text Resume
+	} else {
+		set paused 0
+		uFMOD_Resume
+		.p configure -text Pause
+	}
+}
+
+# Play the given XM file.
+proc PlayXM {xm} {
+global loadstop paused
+	set loadstop 0
+	if {$xm != ""} {
+		set r [uFMOD_ALSAPlaySong $xm plughw:0,0]
+		if {$r == ""} {
+			.o configure -text Stop
+			.p configure -state normal
+			.v configure -state normal
+			set loadstop 1
+			set paused 0
+			set xm [string trim [uFMOD_GetTitle]]
+			if {$xm == ""} { set xm {{anonymous track}}}
+			wm title . $xm
+		} else {
+			tk_messageBox -message "Unable to start playback" -title Error -type ok -icon error
+		}
+	}
+}
+
+button .o -text Load -command LoadStop -width 6
+button .p -text Pause -command PauseResume -state disabled -width 6
+label .s -text VOL:
+scale .v -orient horizontal -from 0 -to 25 -showvalue 0 -length 100 -command uFMOD_SetVolume
+.v set 25
+.v configure -state disabled
+label .l -text 00:00:00
+canvas .c -width 142 -height 30
+.c create text 8 9  -text L
+.c create text 8 25 -text R
+set x 16
+set i 0
+while {$i < 16} {
+	.c create rect $x 1  [expr $x + 5] 14 -fill #C0C0C0 -outline #808080 -tags L$i
+	.c create rect $x 17 [expr $x + 5] 30 -fill #C0C0C0 -outline #808080 -tags R$i
+	set x [expr $x + 8]
+	set i [expr $i + 1]
+}
+pack .o .p .s .v .l .c -side left -padx 2 -pady 2
+wm title . "XM Player"
+wm iconbitmap . uFMOD_ico1_face
+wm iconmask . uFMOD_ico1_mask
+wm resizable . 0 0
+Tick
+
+# If user specifies a command line argument, it should be an XM file name.
+if {$argc == 1} { PlayXM [lindex $argv 0] }
